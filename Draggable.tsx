@@ -278,35 +278,16 @@ export default function Draggable(props: IProps) {
     [onPressOut, onRelease],
   );
 
-  const getDebugView = React.useCallback(() => {
-    const {width, height} = Dimensions.get('window');
-    const far = 9999;
-    const constrained = minX || maxX || minY || maxY;
-    if (!constrained) {
-      return null;
-    } // could show other debug info here
-    const left = minX || -far;
-    const right = maxX ? width - maxX : -far;
-    const top = minY || -far;
-    const bottom = maxY ? height - maxY : -far;
-    return (
-      <View
-        pointerEvents="box-none"
-        style={{left, right, top, bottom, ...styles.debugView}}
-      />
-    );
-  }, [maxX, maxY, minX, minY]);
-  const {width, height} = Dimensions.get('window');
+  const Window = Dimensions.get('window');
   const far = 9999;
   const left = minX || -far;
-  const right = maxX ? width - maxX : -far;
+  const right = maxX ? Window.width - maxX : -far;
   const top = minY || -far;
-  const bottom = maxY ? height - maxY : -far;
+  const bottom = maxY ? Window.height - maxY : -far;
   console.log('positions!!!!', left, right, top, bottom);
 
   return (
     <View pointerEvents="box-none" style={positionCss}>
-      {debug && getDebugView()}
       <Animated.View
         pointerEvents="box-none"
         {...animatedViewProps}
