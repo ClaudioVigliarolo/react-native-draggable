@@ -18,43 +18,49 @@ import {
   StyleProp,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { ViewStyle } from 'react-native/Libraries/StyleSheet/StyleSheet';
+import {ViewStyle} from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 function clamp(number: number, min: number, max: number) {
   return Math.max(min, Math.min(number, max));
 }
 
 interface IProps {
-    /**** props that should probably be removed in favor of "children" */
-    renderText?: string;
-    isCircle?: boolean;
-    renderSize?: number;
-    imageSource?: number;
-    renderColor?: string;
-    /**** */
-    children?: React.ReactNode;
-    shouldReverse?: boolean;
-    disabled?: boolean;
-    debug?: boolean;
-    animatedViewProps?: object;
-    touchableOpacityProps?: object;
-    onDrag?: (e: GestureResponderEvent, gestureState: PanResponderGestureState) => void;
-    onShortPressRelease?: (event: GestureResponderEvent) => void;
-    onDragRelease?: (e: GestureResponderEvent, gestureState: PanResponderGestureState) => void;
-    onLongPress?: (event: GestureResponderEvent) => void;
-    onPressIn?: (event: GestureResponderEvent) => void;
-    onPressOut?: (event: GestureResponderEvent) => void;
-    onRelease?: (event: GestureResponderEvent, wasDragging: boolean) => void;
-    onReverse?: () => {x: number, y: number},
-    x?: number;
-    y?: number;
-    // z/elevation should be removed because it doesn't sync up visually and haptically
-    z?: number;
-    minX?: number;
-    minY?: number;
-    maxX?: number;
-    maxY?: number;
-  };
+  /**** props that should probably be removed in favor of "children" */
+  renderText?: string;
+  isCircle?: boolean;
+  renderSize?: number;
+  imageSource?: number;
+  renderColor?: string;
+  /**** */
+  children?: React.ReactNode;
+  shouldReverse?: boolean;
+  disabled?: boolean;
+  debug?: boolean;
+  animatedViewProps?: object;
+  touchableOpacityProps?: object;
+  onDrag?: (
+    e: GestureResponderEvent,
+    gestureState: PanResponderGestureState,
+  ) => void;
+  onShortPressRelease?: (event: GestureResponderEvent) => void;
+  onDragRelease?: (
+    e: GestureResponderEvent,
+    gestureState: PanResponderGestureState,
+  ) => void;
+  onLongPress?: (event: GestureResponderEvent) => void;
+  onPressIn?: (event: GestureResponderEvent) => void;
+  onPressOut?: (event: GestureResponderEvent) => void;
+  onRelease?: (event: GestureResponderEvent, wasDragging: boolean) => void;
+  onReverse?: () => {x: number; y: number};
+  x?: number;
+  y?: number;
+  // z/elevation should be removed because it doesn't sync up visually and haptically
+  z?: number;
+  minX?: number;
+  minY?: number;
+  maxX?: number;
+  maxY?: number;
+}
 
 export default function Draggable(props: IProps) {
   const {
@@ -108,7 +114,7 @@ export default function Draggable(props: IProps) {
   }, [x, y]);
 
   const shouldStartDrag = React.useCallback(
-    gs => {
+    (gs) => {
       return !disabled && (Math.abs(gs.dx) > 2 || Math.abs(gs.dy) > 2);
     },
     [disabled],
@@ -195,10 +201,10 @@ export default function Draggable(props: IProps) {
   React.useEffect(() => {
     const curPan = pan.current; // Using an instance to avoid losing the pointer before the cleanup
     if (!shouldReverse) {
-      curPan.addListener(c => (offsetFromStart.current = c));
+      curPan.addListener((c) => (offsetFromStart.current = c));
     }
     return () => {
-        // Typed incorrectly
+      // Typed incorrectly
       curPan.removeAllListeners();
     };
   }, [shouldReverse]);
@@ -257,7 +263,7 @@ export default function Draggable(props: IProps) {
     }
   }, [children, imageSource, renderSize, renderText]);
 
-  const handleOnLayout = React.useCallback(event => {
+  const handleOnLayout = React.useCallback((event) => {
     const {height, width} = event.nativeEvent.layout;
     childSize.current = {x: width, y: height};
   }, []);
@@ -290,6 +296,13 @@ export default function Draggable(props: IProps) {
       />
     );
   }, [maxX, maxY, minX, minY]);
+  const {width, height} = Dimensions.get('window');
+  const far = 9999;
+  const left = minX || -far;
+  const right = maxX ? width - maxX : -far;
+  const top = minY || -far;
+  const bottom = maxY ? height - maxY : -far;
+  console.log('positions!!!!', left, right, top, bottom);
 
   return (
     <View pointerEvents="box-none" style={positionCss}>
