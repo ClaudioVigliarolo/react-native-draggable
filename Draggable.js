@@ -86,7 +86,6 @@ export default function Draggable(props) {
       toValue: newOffset || originalOffset,
       useNativeDriver: false,
     }).start();
-
   }, [pan]);
 
   const onPanResponderRelease = React.useCallback(
@@ -164,13 +163,13 @@ export default function Draggable(props) {
     if (!shouldReverse) {
       curPan.addListener((c) => (offsetFromStart.current = c));
     } else {
-        reversePosition();
+      reversePosition();
     }
     return () => {
       curPan.removeAllListeners();
     };
   }, [shouldReverse]);
-  
+
   const positionCss = React.useMemo(() => {
     const Window = Dimensions.get('window');
     return {
@@ -251,6 +250,8 @@ export default function Draggable(props) {
     const right = maxX ? width - maxX : -far;
     const top = minY || -far;
     const bottom = maxY ? height - maxY : -far;
+    console.log('positions', left, right, top, bottom);
+
     return (
       <View
         pointerEvents="box-none"
@@ -258,6 +259,11 @@ export default function Draggable(props) {
       />
     );
   }, [maxX, maxY, minX, minY]);
+  const left = minX || -far;
+  const right = maxX ? width - maxX : -far;
+  const top = minY || -far;
+  const bottom = maxY ? height - maxY : -far;
+  console.log('positions', left, right, top, bottom);
 
   return (
     <View pointerEvents="box-none" style={positionCss}>
